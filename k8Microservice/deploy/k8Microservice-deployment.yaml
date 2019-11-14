@@ -1,0 +1,56 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: k8microservice-deployment
+  namespace: default 
+  labels:
+    app: k8Microservice 
+spec:
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 2
+  selector:
+    matchLabels:
+      app: k8Microservice
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+      labels:
+        app: k8Microservice
+    spec:
+      containers:
+      - name: k8microservice 
+        image: k8microservice:latest # modify to correct image name and tag
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 500m
+            memory: 250Mi
+          requests:
+            cpu: 250m
+            memory: 125Mi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+        ports:
+        - containerPort: 80
+        env:
+        - name: MY_ENV_1
+          value: value1
+        - name: MY_ENV_2
+          valueFrom:
+            secretKeyRef:
+              name: k8microservice-secret
+              key: secret1 
+        - name: MY_ENV_3
+          valueFrom:
+            configMapKeyRef:
+              name: k8microservice-configmap
+              key: DATAKEY1

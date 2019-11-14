@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: k8microservice-configmap
+  namespace: default 
+  labels:
+    app: k8Microservice
+data:
+  DATAKEY1: "value1"

@@ -1,0 +1,19 @@
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: k8microservice-hpa
+  namespace: default 
+  labels:
+    app: k8Microservice
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    name: k8microservice-deployment
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 90
